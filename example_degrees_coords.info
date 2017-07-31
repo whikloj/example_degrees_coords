@@ -1,0 +1,4 @@
+name = "Degrees Coordinates - Islandora Simple Map"
+description = "Uses Islandora Simple Map hook to handle coordinates in degrees, minutes, seconds format"
+core = 7.x
+dependencies[] = islandora_simple_map
