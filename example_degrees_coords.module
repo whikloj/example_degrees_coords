@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * All the stuff.
@@ -15,9 +16,9 @@ function example_degrees_coords_islandora_simple_map_get_coordinates(AbstractObj
     if (strlen(trim(variable_get('islandora_simple_map_coordinate_delimiter', ';'))) > 0) {
       $temp_array = explode(trim(variable_get('islandora_simple_map_coordinate_delimiter', ';')), $value);
       foreach ($temp_array as $item) {
-        if (preg_match_all("/(\d+)°?(\s+\d[\d\.]+'?)?(\s+\d[\d\.]+\"?)?\s*([NSEW])\s*/u", trim($item), $matches, PREG_SET_ORDER, 0)) {
+        if (preg_match_all("/(\d+)°?(\s+[\d\.]+'?)?(\s+[\d\.]+\"?)?\s*([NSEW])\s*,?/u", trim($item), $matches, PREG_SET_ORDER, 0)) {
           foreach ($matches as $match) {
-            if ($match[count($match)-1] == 'N' || $match[count($match)-1] == 'S') {
+            if ($match[count($match) - 1] == 'N' || $match[count($match) - 1] == 'S') {
               $lat = example_degrees_coords_convert_to_decimal($match);
             }
             else {
@@ -39,13 +40,22 @@ function example_degrees_coords_islandora_simple_map_get_coordinates(AbstractObj
   return $found_coords;
 }
 
+/**
+ * Does the actual calculation of DMS to decimal.
+ *
+ * @param array $coord
+ *   Array of regexp match.
+ *
+ * @return string
+ *   lat,lng decimal format.
+ */
 function example_degrees_coords_convert_to_decimal(array $coord) {
   $decimal = 0;
-  $pos_neg = false;
-  $clean = function($c) {
+  $pos_neg = FALSE;
+  $clean = function ($c) {
     return str_replace('"', '', str_replace('\'', '', trim($c)));
   };
-  for ($bar = count($coord)-1; $bar > 1; $bar -= 1) {
+  for ($bar = count($coord) - 1; $bar > 1; $bar -= 1) {
     if (preg_match('/^[NSEW]?$/', $coord[$bar])) {
       $pos_neg = ($coord[$bar] == 'N' || $coord[$bar] == 'E');
     }
